@@ -36,7 +36,6 @@
       color: #0095f6; font-size: 0.9rem; font-weight: 600;
       padding: 0.5rem; text-decoration: none;
     }
-    #status { font-size: 0.7rem; color: #333; margin-top: 1.25rem; }
   </style>
 </head>
 <body>
@@ -45,21 +44,15 @@
   <h2>Vedi il profilo completo<br>nell'app</h2>
   <p class="desc">Usa l'app per vedere altro su<br><strong>ovrtm.overtime</strong></p>
 
-  <!-- Link diretto senza JavaScript, funziona meglio su Chrome iOS -->
-  <a class="btn-open"
-     href="https://www.instagram.com/ovrtm.overtime/"
-     id="ig-btn">Apri Instagram</a>
-  <a class="btn-follow"
-     href="https://www.instagram.com/ovrtm.overtime/"
-     id="ig-follow">Iscriviti</a>
-
-  <div id="status"></div>
+  <a class="btn-open" href="https://www.instagram.com/ovrtm.overtime/" id="ig-btn">Apri Instagram</a>
+  <a class="btn-follow" href="https://www.instagram.com/ovrtm.overtime/" id="ig-follow">Iscriviti</a>
 </div>
 
 <script>
   const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
   const IG_USER = 'ovrtm.overtime';
+  const IG_URL  = 'https://www.instagram.com/' + IG_USER + '/';
 
   function getDevice() {
     const ua = navigator.userAgent;
@@ -68,9 +61,12 @@
     return 'other';
   }
 
-  function isSafariBrowser() {
+  function isSafariNativo() {
     const ua = navigator.userAgent;
-    return /Safari/i.test(ua) && !/CriOS/i.test(ua) && !/FxiOS/i.test(ua) && !/OPiOS/i.test(ua);
+    // Safari nativo iOS: contiene Safari ma NON contiene CriOS, FxiOS, OPiOS, EdgiOS
+    return /iPhone|iPad|iPod/i.test(ua) &&
+           /Safari/i.test(ua) &&
+           !/CriOS|FxiOS|OPiOS|EdgiOS/i.test(ua);
   }
 
   async function registerScan(device) {
@@ -90,21 +86,11 @@
 
   function init() {
     const device = getDevice();
-
-    // Su Android imposta il link intent://
-    if (device === 'android') {
-      const androidLink = 'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end';
-      document.getElementById('ig-btn').href    = androidLink;
-      document.getElementById('ig-follow').href = androidLink;
-    }
-
     registerScan(device);
 
-    // Auto-redirect solo su Safari nativo iOS e Android
-    // Chrome iOS (CriOS) NON fa auto-redirect — l'utente tocca il bottone
-    if (device === 'android' || (device === 'ios' && isSafariBrowser())) {
-      const link = document.getElementById('ig-btn').href;
-      setTimeout(() => { window.location.href = link; }, 1500);
+    // Auto-redirect SOLO su Safari nativo iPhone — su tutto il resto aspetta il click
+    if (isSafariNativo()) {
+      setTimeout(() => { window.location.href = IG_URL; }, 1500);
     }
   }
 
