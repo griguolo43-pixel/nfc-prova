@@ -86,10 +86,17 @@
   function init() {
     const device = getDevice();
     const link   = getLink(device);
+    const isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
+
     document.getElementById('ig-btn').href    = link;
     document.getElementById('ig-follow').href = link;
+
     registerScan(device);
-    setTimeout(() => { window.location.href = link; }, 1500);
+
+    // Auto-redirect solo su Safari (non su Chrome iOS che mostra il popup fastidioso)
+    if (isSafari || device === 'android') {
+      setTimeout(() => { window.location.href = link; }, 1500);
+    }
   }
 
   init();
