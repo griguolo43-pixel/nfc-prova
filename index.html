@@ -27,14 +27,14 @@
     .btn-open {
       display: block; width: 100%; background: #0095f6;
       color: #fff; font-size: 0.95rem; font-weight: 700;
-      padding: 0.75rem; border-radius: 10px; border: none; cursor: pointer;
+      padding: 0.75rem; border-radius: 10px;
       text-decoration: none; margin-bottom: 0.75rem;
     }
     .btn-open:active { opacity: 0.85; }
     .btn-follow {
       display: block; width: 100%; background: transparent;
       color: #0095f6; font-size: 0.9rem; font-weight: 600;
-      padding: 0.5rem; border: none; cursor: pointer; text-decoration: none;
+      padding: 0.5rem; text-decoration: none;
     }
     #status { font-size: 0.7rem; color: #333; margin-top: 1.25rem; }
   </style>
@@ -44,15 +44,22 @@
   <div class="avatar"><span>OVRTM</span></div>
   <h2>Vedi il profilo completo<br>nell'app</h2>
   <p class="desc">Usa l'app per vedere altro su<br><strong>ovrtm.overtime</strong></p>
-  <a class="btn-open" id="ig-btn" href="#">Apri Instagram</a>
-  <a class="btn-follow" id="ig-follow" href="#">Iscriviti</a>
+
+  <!-- Link diretto senza JavaScript, funziona meglio su Chrome iOS -->
+  <a class="btn-open"
+     href="https://www.instagram.com/ovrtm.overtime/"
+     id="ig-btn">Apri Instagram</a>
+  <a class="btn-follow"
+     href="https://www.instagram.com/ovrtm.overtime/"
+     id="ig-follow">Iscriviti</a>
+
   <div id="status"></div>
 </div>
+
 <script>
   const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
   const IG_USER = 'ovrtm.overtime';
-  const IG_URL  = 'https://www.instagram.com/' + IG_USER + '/';
 
   function getDevice() {
     const ua = navigator.userAgent;
@@ -61,11 +68,9 @@
     return 'other';
   }
 
-  function getLink(device) {
-    if (device === 'android') {
-      return 'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end';
-    }
-    return IG_URL;
+  function isSafariBrowser() {
+    const ua = navigator.userAgent;
+    return /Safari/i.test(ua) && !/CriOS/i.test(ua) && !/FxiOS/i.test(ua) && !/OPiOS/i.test(ua);
   }
 
   async function registerScan(device) {
@@ -85,16 +90,20 @@
 
   function init() {
     const device = getDevice();
-    const link   = getLink(device);
-    const isSafari = /Safari/i.test(navigator.userAgent) && !/Chrome/i.test(navigator.userAgent);
 
-    document.getElementById('ig-btn').href    = link;
-    document.getElementById('ig-follow').href = link;
+    // Su Android imposta il link intent://
+    if (device === 'android') {
+      const androidLink = 'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end';
+      document.getElementById('ig-btn').href    = androidLink;
+      document.getElementById('ig-follow').href = androidLink;
+    }
 
     registerScan(device);
 
-    // Auto-redirect solo su Safari (non su Chrome iOS che mostra il popup fastidioso)
-    if (isSafari || device === 'android') {
+    // Auto-redirect solo su Safari nativo iOS e Android
+    // Chrome iOS (CriOS) NON fa auto-redirect — l'utente tocca il bottone
+    if (device === 'android' || (device === 'ios' && isSafariBrowser())) {
+      const link = document.getElementById('ig-btn').href;
       setTimeout(() => { window.location.href = link; }, 1500);
     }
   }
