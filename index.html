@@ -14,68 +14,115 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      text-align: center;
-      padding: 2rem;
     }
-    .logo {
-      width: 80px; height: 80px;
+
+    .sheet {
+      background: #1c1c1e;
       border-radius: 20px;
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      padding: 2rem 1.5rem 1.75rem;
+      max-width: 340px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #7c3aed;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.1rem;
+      font-size: 0.75rem; font-weight: 800;
+      color: #fff; letter-spacing: 0.05em;
     }
-    .logo svg { width: 44px; height: 44px; fill: white; }
-    h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.4rem; }
-    p  { font-size: 0.95rem; color: #aaa; margin-bottom: 2rem; }
-    .btn {
-      display: inline-block;
-      background: linear-gradient(45deg, #f09433, #dc2743, #bc1888);
-      color: white; text-decoration: none;
-      font-size: 1rem; font-weight: 600;
-      padding: 0.85rem 2.5rem;
-      border-radius: 999px;
+    .avatar img { width: 72px; height: 72px; border-radius: 50%; object-fit: cover; }
+
+    h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .desc {
+      font-size: 0.85rem; color: #aaa;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
     }
-    #status { margin-top: 1.5rem; font-size: 0.75rem; color: #444; }
+    .desc strong { color: #fff; }
+
+    .btn-open {
+      display: block; width: 100%;
+      background: #0095f6;
+      color: #fff; font-size: 0.95rem; font-weight: 700;
+      padding: 0.75rem;
+      border-radius: 10px;
+      border: none; cursor: pointer;
+      text-decoration: none;
+      margin-bottom: 0.75rem;
+    }
+    .btn-open:active { opacity: 0.85; }
+
+    .btn-follow {
+      display: block; width: 100%;
+      background: transparent;
+      color: #0095f6; font-size: 0.9rem; font-weight: 600;
+      padding: 0.5rem;
+      border: none; cursor: pointer;
+      text-decoration: none;
+    }
+
+    #status { font-size: 0.7rem; color: #333; margin-top: 1.25rem; }
   </style>
 </head>
 <body>
 
-  <div class="logo">
-    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-    </svg>
+<div class="sheet">
+
+  <div class="avatar">
+    <span>OVRTM</span>
   </div>
 
-  <h1>@ovrtm.overtime</h1>
-  <p>Apertura Instagram in corso…</p>
-  <a class="btn" id="ig-link" href="#">Apri Instagram</a>
-  <div id="status">registrazione scansione…</div>
+  <h2>Vedi il profilo completo<br>nell'app</h2>
+  <p class="desc">Usa l'app per vedere altro su<br><strong>ovrtm.overtime</strong></p>
 
-  <script>
-    // ══════════════════════════════════════════
-    //  INSERISCI QUI LE TUE CREDENZIALI SUPABASE
-    // ══════════════════════════════════════════
-    const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';   // ← sostituisci
-    const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';  // ← sostituisci (anon public)
-    // ══════════════════════════════════════════
+  <a class="btn-open" id="ig-btn" href="#">Apri Instagram</a>
+  <a class="btn-follow" id="ig-follow" href="#">Iscriviti</a>
 
-    function getDevice() {
-      const ua = navigator.userAgent;
-      if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
-      if (/Android/i.test(ua)) return 'android';
-      return 'other';
+  <div id="status"></div>
+</div>
+
+<script>
+  // ══════════════════════════════════════════
+  const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
+  // ══════════════════════════════════════════
+
+  const IG_USER = 'ovrtm.overtime';
+
+  function getDevice() {
+    const ua = navigator.userAgent;
+    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
+    if (/Android/i.test(ua)) return 'android';
+    return 'other';
+  }
+
+  function getLinks(device) {
+    if (device === 'ios') {
+      return {
+        open:   'instagram://user?username=' + IG_USER,
+        follow: 'instagram://user?username=' + IG_USER
+      };
     }
-
-    function getLink(device) {
-      if (device === 'android')
-        return 'intent://instagram.com/ovrtm.overtime#Intent;package=com.instagram.android;scheme=https;end';
-      return 'https://www.instagram.com/ovrtm.overtime/';
+    if (device === 'android') {
+      return {
+        open:   'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end',
+        follow: 'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end'
+      };
     }
+    return {
+      open:   'https://www.instagram.com/' + IG_USER + '/',
+      follow: 'https://www.instagram.com/' + IG_USER + '/'
+    };
+  }
 
-    async function registerScan(device) {
+  async function registerScan(device) {
+    if (!SUPABASE_URL.includes('XXXX')) {
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/nfc_scans`, {
+        await fetch(`${SUPABASE_URL}/rest/v1/nfc_scans`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -85,21 +132,26 @@
           },
           body: JSON.stringify({ device })
         });
-        document.getElementById('status').textContent = res.ok ? 'scansione registrata' : 'errore registrazione';
-      } catch {
-        document.getElementById('status').textContent = 'offline – non registrato';
-      }
+      } catch {}
     }
+  }
 
-    async function init() {
-      const device = getDevice();
-      const link = getLink(device);
-      document.getElementById('ig-link').href = link;
-      await registerScan(device);
-      setTimeout(() => { window.location.href = link; }, 1200);
-    }
+  function init() {
+    const device = getDevice();
+    const links  = getLinks(device);
 
-    init();
-  </script>
+    document.getElementById('ig-btn').href    = links.open;
+    document.getElementById('ig-follow').href = links.follow;
+
+    registerScan(device);
+
+    // Auto-redirect dopo 1.5s
+    setTimeout(() => {
+      window.location.href = links.open;
+    }, 1500);
+  }
+
+  init();
+</script>
 </body>
 </html>
