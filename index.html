@@ -4,272 +4,178 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Apri Instagram</title>
-
   <style>
-    *{
-      box-sizing:border-box;
-      -webkit-tap-highlight-color:transparent;
-    }
-
-    html,body{
-      margin:0;
-      height:100%;
-      font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
-      background:#0b0b0f;
-      color:#fff;
-    }
-
-    body{
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-
+    *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body{ margin:0; height:100%; font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif; background:#0b0b0f; color:#fff; }
+    body{ display:flex; align-items:center; justify-content:center; }
     .modal{
-      width:90%;
-      max-width:360px;
-      background:#1c1c1e;
-      border-radius:26px;
-      padding:30px 20px 24px;
-      text-align:center;
+      width:90%; max-width:360px; background:#1c1c1e; border-radius:26px;
+      padding:30px 20px 24px; text-align:center;
       box-shadow:0 20px 60px rgba(0,0,0,0.6);
-      animation:fadeUp 0.35s ease forwards;
-      transform:translateY(20px);
-      opacity:0;
+      animation:fadeUp 0.35s ease forwards; transform:translateY(20px); opacity:0;
     }
-
     .logo-ring{
-      width:100px;
-      height:100px;
-      margin:0 auto 20px;
-      padding:3px;
+      width:100px; height:100px; margin:0 auto 20px; padding:3px;
       border-radius:50%;
       background:linear-gradient(135deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
     }
-
-    .logo-inner{
-      width:100%;
-      height:100%;
-      border-radius:50%;
-      overflow:hidden;
-      background:#000;
-    }
-
-    .logo-inner img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-    }
-
-    .title{
-      font-size:21px;
-      font-weight:bold;
-      margin-bottom:10px;
-    }
-
-    .subtitle{
-      font-size:14px;
-      color:#bbb;
-      margin-bottom:22px;
-      line-height:1.4;
-    }
-
+    .logo-inner{ width:100%; height:100%; border-radius:50%; overflow:hidden; background:#000; }
+    .logo-inner img{ width:100%; height:100%; object-fit:cover; }
+    .title{ font-size:21px; font-weight:bold; margin-bottom:10px; }
+    .subtitle{ font-size:14px; color:#bbb; margin-bottom:22px; line-height:1.4; }
     .btn{
-      width:100%;
-      padding:16px;
-      border:none;
-      border-radius:14px;
-      background:#4a5cff;
-      color:#fff;
-      font-size:17px;
-      font-weight:bold;
-      cursor:pointer;
-      transition:all 0.12s ease;
+      width:100%; padding:16px; border:none; border-radius:14px;
+      background:#4a5cff; color:#fff; font-size:17px; font-weight:bold;
+      cursor:pointer; transition:all 0.12s ease;
     }
-
-    .btn:active{
-      transform:scale(0.96);
-    }
-
-    .secondary{
-      margin-top:14px;
-      font-size:14px;
-      color:#aaa;
-    }
-
-    @keyframes fadeUp{
-      to{
-        opacity:1;
-        transform:translateY(0);
-      }
-    }
+    .btn:active{ transform:scale(0.96); }
+    .secondary{ margin-top:14px; font-size:14px; color:#aaa; cursor:pointer; }
+    @keyframes fadeUp{ to{ opacity:1; transform:translateY(0); } }
   </style>
 </head>
-
 <body>
-
   <div class="modal">
-
     <div class="logo-ring">
       <div class="logo-inner">
         <img src="logo.png" alt="OVRTM">
       </div>
     </div>
-
-    <div class="title">
-      Vedi il profilo completo nell'app
-    </div>
-
-    <div class="subtitle">
-      Usa l'app per vedere altro su<br>
-      <b>ovrtm.overtime</b>
-    </div>
-
-    <button class="btn" id="openBtn">
-      Apri Instagram
-    </button>
-
-    <div class="secondary">
-      Iscriviti
-    </div>
-
+    <div class="title">Vedi il profilo completo nell'app</div>
+    <div class="subtitle">Usa l'app per vedere altro su<br><b>ovrtm.overtime</b></div>
+    <button class="btn" id="openBtn">Apri Instagram</button>
+    <div class="secondary" id="followBtn">Iscriviti</div>
   </div>
 
-  <script>
-    const username = "ovrtm.overtime";
-    const trackingUrl = "https://script.google.com/macros/s/AKfycbxgQ9uuuBFlqBixZ4wnkbURToxxSk26FJHmQbu94qFn0bE5ivQsybO_0VzY7NwicTA/exec";
+<script>
+  const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
+  const IG_USER      = 'ovrtm.overtime';
+  const IG_URL       = 'https://www.instagram.com/' + IG_USER + '/';
+  const ANDROID_INTENT = 'intent://www.instagram.com/' + IG_USER + '/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F' + IG_USER + '%2F;end';
 
-    const ua = navigator.userAgent || "";
-    const lang = navigator.language || "";
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
-    const screenW = window.screen.width || "";
-    const screenH = window.screen.height || "";
-    const referrer = document.referrer || "";
-    const pageUrl = window.location.href || "";
-    const pagePath = window.location.pathname || "";
+  // ── Parametri URL ──────────────────────────────────────────
+  const params   = new URLSearchParams(window.location.search);
+  const tag      = params.get('tag')      || '000';
+  const campaign = params.get('campaign') || '';
+  const src      = params.get('src')      || 'nfc';
 
-    const params = new URLSearchParams(window.location.search);
-    const tagId = params.get("tag") || "000";
-    const campaign = params.get("campaign") || "";
-    const source = params.get("src") || "nfc";
+  // ── User ID anonimo persistente ────────────────────────────
+  function getUID() {
+    let uid = localStorage.getItem('nfc_uid');
+    if (!uid) { uid = 'u_' + Math.random().toString(36).slice(2,10) + Date.now().toString(36); localStorage.setItem('nfc_uid', uid); }
+    return uid;
+  }
+  const userId = getUID();
 
-    const isAndroid = /Android/i.test(ua);
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+  // ── Rilevamento dispositivo/browser ───────────────────────
+  const ua       = navigator.userAgent || '';
+  const isIOS    = /iPhone|iPad|iPod/i.test(ua);
+  const isAndroid= /Android/i.test(ua);
+  const isMobile = isIOS || isAndroid;
+  const platform = isAndroid ? 'android' : isIOS ? 'ios' : 'other';
+  const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS|Chrome/i.test(ua);
+  const isChrome = /CriOS|Chrome/i.test(ua) && !/Edg|OPR/i.test(ua);
+  const browser  = isSafari ? 'safari' : isChrome ? 'chrome' : 'other';
 
-    const webUrl = "https://www.instagram.com/" + username + "/";
-    const androidIntent = "intent://www.instagram.com/" + username + "/#Intent;package=com.instagram.android;scheme=https;end";
+  function getModel() {
+    if (isIOS) return 'iPhone';
+    const m = ua.match(/Android[^;]*;\s*([^)]+)\)/);
+    return m ? m[1].trim() : 'Android';
+  }
 
-    const pageOpenedAt = Date.now();
+  const pageOpenTime = Date.now();
 
-    function getPlatform() {
-      if (isAndroid) return "Android";
-      if (isIOS) return "iOS";
-      return "Other";
+  // ── Payload base ───────────────────────────────────────────
+  function basePayload(event, extra) {
+    return Object.assign({
+      event,
+      tag,
+      campaign,
+      src,
+      user_id:          userId,
+      timestamp_client: new Date().toISOString(),
+      ua,
+      platform,
+      model:            getModel(),
+      browser,
+      mobile:           isMobile,
+      language:         navigator.language || '',
+      timezone:         Intl.DateTimeFormat().resolvedOptions().timeZone || '',
+      screen:           screen.width + 'x' + screen.height,
+      referrer:         document.referrer || '',
+      page_url:         location.href,
+      page_path:        location.pathname + location.search,
+    }, extra || {});
+  }
+
+  // ── Invio a Supabase ───────────────────────────────────────
+  function track(payload) {
+    const body = JSON.stringify(payload);
+    if (navigator.sendBeacon) {
+      const blob = new Blob([body], { type: 'application/json' });
+      // sendBeacon non supporta headers custom → uso fetch con keepalive
     }
+    fetch(SUPABASE_URL + '/rest/v1/nfc_scans', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer':        'return=minimal'
+      },
+      body,
+      keepalive: true
+    }).catch(function(){});
+  }
 
-    function getModel() {
-      if (isIOS) return "iPhone/iPad";
-      if (isAndroid) return "Android";
-      return "Other";
-    }
+  // ── 1. page_open ──────────────────────────────────────────
+  track(basePayload('page_open', { seconds_on_page: 0, destination: IG_URL }));
 
-    function getBrowserName() {
-      const ua = navigator.userAgent;
-      if (ua.includes("Instagram")) return "Instagram In-App Browser";
-      if (ua.includes("CriOS")) return "Chrome iOS";
-      if (ua.includes("Chrome")) return "Chrome";
-      if (ua.includes("Safari")) return "Safari";
-      if (ua.includes("Firefox")) return "Firefox";
-      if (ua.includes("Edg")) return "Edge";
-      return "Unknown";
-    }
+  // ── 2. visibility_change ──────────────────────────────────
+  document.addEventListener('visibilitychange', function() {
+    track(basePayload('visibility_change', {
+      seconds_on_page: Math.round((Date.now() - pageOpenTime) / 1000),
+      destination: document.hidden ? 'background' : 'foreground'
+    }));
+  });
 
-    function getPersistentUserId() {
-      let id = localStorage.getItem("ovrtm_user_id");
-      if (!id) {
-        id = "u_" + Math.random().toString(36).slice(2) + Date.now();
-        localStorage.setItem("ovrtm_user_id", id);
-      }
-      return id;
-    }
+  // ── 3. page_hide ─────────────────────────────────────────
+  window.addEventListener('pagehide', function() {
+    track(basePayload('page_hide', {
+      seconds_on_page: Math.round((Date.now() - pageOpenTime) / 1000),
+      destination: IG_URL
+    }));
+  });
 
-    const userId = getPersistentUserId();
-
-    function buildPayload(eventType, extra = {}) {
-      return {
-        event: eventType,
-        timestamp_client: new Date().toISOString(),
-        tag: tagId,
-        campaign: campaign,
-        src: source,
-        username: username,
-        user_id: userId,
-        ua: ua,
-        platform: getPlatform(),
-        model: getModel(),
-        browser: getBrowserName(),
-        mobile: isMobile ? "TRUE" : "FALSE",
-        language: lang,
-        timezone: timezone,
-        screen: screenW + "x" + screenH,
-        referrer: referrer,
-        page_url: pageUrl,
-        page_path: pagePath,
-        ...extra
-      };
-    }
-
-    function sendTracking(data) {
-      const body = JSON.stringify(data);
-
-      if (navigator.sendBeacon) {
-        const blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
-        navigator.sendBeacon(trackingUrl, blob);
-      } else {
-        fetch(trackingUrl, {
-          method: "POST",
-          headers: { "Content-Type": "text/plain;charset=UTF-8" },
-          body: body,
-          keepalive: true
-        }).catch(() => {});
-      }
-    }
-
-    function track(eventType, extra = {}) {
-      sendTracking(buildPayload(eventType, extra));
-    }
-
-    track("page_open");
-
-    document.addEventListener("visibilitychange", function () {
-      track("visibility_change", {
-        visibility_state: document.visibilityState
-      });
-    });
-
-    document.getElementById("openBtn").addEventListener("click", function () {
-      track("click_instagram", {
-        destination: webUrl
-      });
-
+  // ── 4. click_instagram ────────────────────────────────────
+  function openInstagram() {
+    track(basePayload('click_instagram', {
+      seconds_on_page: Math.round((Date.now() - pageOpenTime) / 1000),
+      destination: IG_URL
+    }));
+    setTimeout(function() {
       if (isAndroid) {
-        window.location.href = androidIntent;
-        setTimeout(function () {
-          window.location.href = webUrl;
-        }, 900);
+        window.location.href = ANDROID_INTENT;
+        setTimeout(function() { window.location.href = IG_URL; }, 900);
       } else {
-        window.location.href = webUrl;
+        window.location.href = IG_URL;
       }
-    });
+    }, 120);
+  }
 
-    window.addEventListener("pagehide", function () {
-      const secondsOnPage = Math.round((Date.now() - pageOpenedAt) / 1000);
-      track("page_hide", {
-        seconds_on_page: secondsOnPage
-      });
-    });
-  </script>
+  document.getElementById('openBtn').addEventListener('click', openInstagram);
+  document.getElementById('followBtn').addEventListener('click', openInstagram);
 
+  // ── Auto-redirect solo su Safari nativo iOS ───────────────
+  if (isIOS && isSafari) {
+    setTimeout(function() {
+      track(basePayload('click_instagram', {
+        seconds_on_page: 0,
+        destination: IG_URL
+      }));
+      window.location.href = IG_URL;
+    }, 1500);
+  }
+</script>
 </body>
 </html>

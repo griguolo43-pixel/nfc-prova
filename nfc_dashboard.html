@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard NFC – ovrtm.overtime</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; padding: 2rem 1.5rem; }
+    h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .sub { color: #555; font-size: 0.85rem; margin-bottom: 2rem; }
+
+    #login-screen { max-width: 340px; margin: 4rem auto; text-align: center; }
+    #login-screen input { width: 100%; padding: 0.75rem 1rem; background: #111; border: 1px solid #333; border-radius: 10px; color: #fff; font-size: 1rem; margin: 1.5rem 0 0.75rem; }
+    #login-screen button { width: 100%; padding: 0.75rem; background: linear-gradient(45deg,#f09433,#dc2743,#bc1888); border: none; border-radius: 10px; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; }
+    #login-error { color: #e24b4b; font-size: 0.8rem; margin-top: 0.5rem; }
+
+    #dashboard { display: none; max-width: 900px; margin: 0 auto; }
+
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 2rem; }
+    @media(max-width:600px){ .cards{ grid-template-columns: repeat(2,1fr); } }
+    .card { background: #111; border: 1px solid #1e1e1e; border-radius: 14px; padding: 1rem 1.2rem; }
+    .card .label { font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.4rem; }
+    .card .value { font-size: 1.8rem; font-weight: 700; }
+    .c-white  { color: #fff; }
+    .c-blue   { color: #63b3f5; }
+    .c-green  { color: #7fcf75; }
+    .c-yellow { color: #FAC775; }
+    .c-gray   { color: #888; }
+
+    .section-title { font-size: 0.75rem; color: #444; text-transform: uppercase; letter-spacing: 0.06em; margin: 1.5rem 0 0.75rem; }
+
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 700px; }
+    th { text-align: left; color: #444; font-weight: 500; padding: 0.4rem 0.6rem; border-bottom: 1px solid #1a1a1a; white-space: nowrap; }
+    td { padding: 0.45rem 0.6rem; border-bottom: 1px solid #111; color: #bbb; white-space: nowrap; }
+
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
+    .badge.page_open       { background:#0c447c22; color:#63b3f5; }
+    .badge.click_instagram { background:#27500a22; color:#7fcf75; }
+    .badge.visibility_change{ background:#63380622; color:#FAC775; }
+    .badge.page_hide       { background:#2c2c2a33; color:#888; }
+    .badge.ios             { background:#0c447c22; color:#63b3f5; }
+    .badge.android         { background:#27500a22; color:#7fcf75; }
+    .badge.other           { background:#2c2c2a33; color:#888; }
+    .badge.safari          { background:#0c447c22; color:#63b3f5; }
+    .badge.chrome          { background:#63380622; color:#FAC775; }
+
+    .toolbar { display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .toolbar select, .toolbar input { background: #111; border: 1px solid #222; color: #ccc; padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 0.8rem; }
+    .refresh-btn { background: none; border: 1px solid #333; color: #888; padding: 0.4rem 1rem; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+    .refresh-btn:hover { border-color: #555; color: #ccc; }
+    .logout { font-size: 0.75rem; color: #333; cursor: pointer; margin-top: 2rem; display: inline-block; }
+    .logout:hover { color: #888; }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <h1>Dashboard NFC</h1>
+  <p style="color:#555;font-size:0.85rem;margin-top:0.5rem;">@ovrtm.overtime</p>
+  <input type="password" id="pwd-input" placeholder="Password" />
+  <button onclick="tryLogin()">Accedi</button>
+  <div id="login-error"></div>
+</div>
+
+<div id="dashboard">
+  <h1>Dashboard NFC</h1>
+  <p class="sub">@ovrtm.overtime</p>
+
+  <div class="cards">
+    <div class="card"><div class="label">Scansioni totali</div><div class="value c-white" id="c-total">–</div></div>
+    <div class="card"><div class="label">Utenti unici</div><div class="value c-blue" id="c-users">–</div></div>
+    <div class="card"><div class="label">Click Instagram</div><div class="value c-green" id="c-clicks">–</div></div>
+    <div class="card"><div class="label">iOS / Android</div><div class="value c-yellow" id="c-ios-android">–</div></div>
+  </div>
+
+  <div class="toolbar">
+    <button class="refresh-btn" onclick="loadData()">↻ Aggiorna</button>
+    <select id="filter-event" onchange="loadData()">
+      <option value="">Tutti gli eventi</option>
+      <option value="page_open">page_open</option>
+      <option value="click_instagram">click_instagram</option>
+      <option value="visibility_change">visibility_change</option>
+      <option value="page_hide">page_hide</option>
+    </select>
+    <select id="filter-platform" onchange="loadData()">
+      <option value="">Tutti i dispositivi</option>
+      <option value="ios">iOS</option>
+      <option value="android">Android</option>
+      <option value="other">Altro</option>
+    </select>
+    <select id="filter-browser" onchange="loadData()">
+      <option value="">Tutti i browser</option>
+      <option value="safari">Safari</option>
+      <option value="chrome">Chrome</option>
+      <option value="other">Altro</option>
+    </select>
+  </div>
+
+  <div class="section-title">Ultime 100 scansioni</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Data e ora</th>
+          <th>Evento</th>
+          <th>Dispositivo</th>
+          <th>Browser</th>
+          <th>Modello</th>
+          <th>Tag</th>
+          <th>Campaign</th>
+          <th>Secondi</th>
+          <th>Lingua</th>
+          <th>Schermo</th>
+          <th>User ID</th>
+        </tr>
+      </thead>
+      <tbody id="scan-list"><tr><td colspan="11" style="color:#333;padding:1rem 0">Caricamento…</td></tr></tbody>
+    </table>
+  </div>
+
+  <span class="logout" onclick="logout()">Esci</span>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
+  const DASHBOARD_PASSWORD = 'Penelope-01';
+
+  function tryLogin() {
+    if (document.getElementById('pwd-input').value === DASHBOARD_PASSWORD) {
+      sessionStorage.setItem('nfc_auth','1');
+      showDashboard();
+    } else {
+      document.getElementById('login-error').textContent = 'Password errata';
+    }
+  }
+  document.getElementById('pwd-input').addEventListener('keydown', e => { if(e.key==='Enter') tryLogin(); });
+
+  function showDashboard() {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+  }
+
+  function logout() { sessionStorage.removeItem('nfc_auth'); location.reload(); }
+
+  async function loadData() {
+    const headers = { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY };
+
+    // Filtri
+    const evFilter  = document.getElementById('filter-event').value;
+    const plFilter  = document.getElementById('filter-platform').value;
+    const brFilter  = document.getElementById('filter-browser').value;
+
+    let qs = '?select=*&order=scanned_at.desc&limit=100';
+    if (evFilter) qs += '&event=eq.' + evFilter;
+    if (plFilter) qs += '&platform=eq.' + plFilter;
+    if (brFilter) qs += '&browser=eq.' + brFilter;
+
+    // Stats generali (senza filtri)
+    const allRes = await fetch(SUPABASE_URL + '/rest/v1/nfc_scans?select=event,platform,user_id', { headers });
+    const all    = await allRes.json();
+
+    const total   = all.length;
+    const users   = new Set(all.map(r => r.user_id).filter(Boolean)).size;
+    const clicks  = all.filter(r => r.event === 'click_instagram').length;
+    const ios     = all.filter(r => r.platform === 'ios').length;
+    const android = all.filter(r => r.platform === 'android').length;
+
+    document.getElementById('c-total').textContent      = total;
+    document.getElementById('c-users').textContent      = users;
+    document.getElementById('c-clicks').textContent     = clicks;
+    document.getElementById('c-ios-android').textContent = ios + ' / ' + android;
+
+    // Tabella con filtri
+    const res    = await fetch(SUPABASE_URL + '/rest/v1/nfc_scans' + qs, { headers });
+    const rows   = await res.json();
+    const tbody  = document.getElementById('scan-list');
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td colspan="11" style="color:#333;padding:1rem 0">Nessun risultato</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = rows.map(r => {
+      const d = new Date(r.scanned_at);
+      const dt = d.toLocaleDateString('it-IT') + ' ' + d.toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const ev = r.event || '–';
+      const uid = r.user_id ? r.user_id.slice(0,10) + '…' : '–';
+      return `<tr>
+        <td>${dt}</td>
+        <td><span class="badge ${ev}">${ev}</span></td>
+        <td><span class="badge ${r.platform||'other'}">${r.platform||'–'}</span></td>
+        <td><span class="badge ${r.browser||'other'}">${r.browser||'–'}</span></td>
+        <td>${r.model||'–'}</td>
+        <td>${r.tag||'–'}</td>
+        <td>${r.campaign||'–'}</td>
+        <td>${r.seconds_on_page != null ? r.seconds_on_page + 's' : '–'}</td>
+        <td>${r.language||'–'}</td>
+        <td>${r.screen||'–'}</td>
+        <td style="color:#444">${uid}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  if (sessionStorage.getItem('nfc_auth') === '1') showDashboard();
+</script>
+</body>
+</html>
