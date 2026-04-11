@@ -2,99 +2,274 @@
 <html lang="it">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ovrtm.overtime – Instagram</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apri Instagram</title>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #000; color: #fff;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
     }
-    .sheet {
-      background: #1c1c1e; border-radius: 20px;
-      padding: 2rem 1.5rem 1.75rem; max-width: 340px; width: 90%; text-align: center;
+
+    html,body{
+      margin:0;
+      height:100%;
+      font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+      background:#0b0b0f;
+      color:#fff;
     }
-    .avatar {
-      width: 72px; height: 72px; border-radius: 50%; background: #7c3aed;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.1rem; font-size: 0.75rem; font-weight: 800;
-      color: #fff; letter-spacing: 0.05em;
+
+    body{
+      display:flex;
+      align-items:center;
+      justify-content:center;
     }
-    h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .desc { font-size: 0.85rem; color: #aaa; margin-bottom: 1.5rem; line-height: 1.5; }
-    .desc strong { color: #fff; }
-    .btn-open {
-      display: block; width: 100%; background: #0095f6;
-      color: #fff; font-size: 0.95rem; font-weight: 700;
-      padding: 0.75rem; border-radius: 10px;
-      text-decoration: none; margin-bottom: 0.75rem;
+
+    .modal{
+      width:90%;
+      max-width:360px;
+      background:#1c1c1e;
+      border-radius:26px;
+      padding:30px 20px 24px;
+      text-align:center;
+      box-shadow:0 20px 60px rgba(0,0,0,0.6);
+      animation:fadeUp 0.35s ease forwards;
+      transform:translateY(20px);
+      opacity:0;
     }
-    .btn-open:active { opacity: 0.85; }
-    .btn-follow {
-      display: block; width: 100%; background: transparent;
-      color: #0095f6; font-size: 0.9rem; font-weight: 600;
-      padding: 0.5rem; text-decoration: none;
+
+    .logo-ring{
+      width:100px;
+      height:100px;
+      margin:0 auto 20px;
+      padding:3px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#feda75,#fa7e1e,#d62976,#962fbf,#4f5bd5);
+    }
+
+    .logo-inner{
+      width:100%;
+      height:100%;
+      border-radius:50%;
+      overflow:hidden;
+      background:#000;
+    }
+
+    .logo-inner img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+    }
+
+    .title{
+      font-size:21px;
+      font-weight:bold;
+      margin-bottom:10px;
+    }
+
+    .subtitle{
+      font-size:14px;
+      color:#bbb;
+      margin-bottom:22px;
+      line-height:1.4;
+    }
+
+    .btn{
+      width:100%;
+      padding:16px;
+      border:none;
+      border-radius:14px;
+      background:#4a5cff;
+      color:#fff;
+      font-size:17px;
+      font-weight:bold;
+      cursor:pointer;
+      transition:all 0.12s ease;
+    }
+
+    .btn:active{
+      transform:scale(0.96);
+    }
+
+    .secondary{
+      margin-top:14px;
+      font-size:14px;
+      color:#aaa;
+    }
+
+    @keyframes fadeUp{
+      to{
+        opacity:1;
+        transform:translateY(0);
+      }
     }
   </style>
 </head>
+
 <body>
-<div class="sheet">
-  <div class="avatar"><span>OVRTM</span></div>
-  <h2>Vedi il profilo completo<br>nell'app</h2>
-  <p class="desc">Usa l'app per vedere altro su<br><strong>ovrtm.overtime</strong></p>
 
-  <a class="btn-open" href="https://www.instagram.com/ovrtm.overtime/" id="ig-btn">Apri Instagram</a>
-  <a class="btn-follow" href="https://www.instagram.com/ovrtm.overtime/" id="ig-follow">Iscriviti</a>
-</div>
+  <div class="modal">
 
-<script>
-  const SUPABASE_URL = 'https://ydwjejxcjfuuyxlrykvr.supabase.co';
-  const SUPABASE_KEY = 'sb_publishable_xoBI9oqM5qJ2GJ8OmFG74w_nkcv-stD';
-  const IG_USER = 'ovrtm.overtime';
-  const IG_URL  = 'https://www.instagram.com/' + IG_USER + '/';
+    <div class="logo-ring">
+      <div class="logo-inner">
+        <img src="logo.png" alt="OVRTM">
+      </div>
+    </div>
 
-  function getDevice() {
-    const ua = navigator.userAgent;
-    if (/iPhone|iPad|iPod/i.test(ua)) return 'ios';
-    if (/Android/i.test(ua)) return 'android';
-    return 'other';
-  }
+    <div class="title">
+      Vedi il profilo completo nell'app
+    </div>
 
-  function isSafariNativo() {
-    const ua = navigator.userAgent;
-    // Safari nativo iOS: contiene Safari ma NON contiene CriOS, FxiOS, OPiOS, EdgiOS
-    return /iPhone|iPad|iPod/i.test(ua) &&
-           /Safari/i.test(ua) &&
-           !/CriOS|FxiOS|OPiOS|EdgiOS/i.test(ua);
-  }
+    <div class="subtitle">
+      Usa l'app per vedere altro su<br>
+      <b>ovrtm.overtime</b>
+    </div>
 
-  async function registerScan(device) {
-    try {
-      await fetch(SUPABASE_URL + '/rest/v1/nfc_scans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Prefer': 'return=minimal'
-        },
-        body: JSON.stringify({ device })
-      });
-    } catch {}
-  }
+    <button class="btn" id="openBtn">
+      Apri Instagram
+    </button>
 
-  function init() {
-    const device = getDevice();
-    registerScan(device);
+    <div class="secondary">
+      Iscriviti
+    </div>
 
-    // Auto-redirect SOLO su Safari nativo iPhone — su tutto il resto aspetta il click
-    if (isSafariNativo()) {
-      setTimeout(() => { window.location.href = IG_URL; }, 1500);
+  </div>
+
+  <script>
+    const username = "ovrtm.overtime";
+    const trackingUrl = "https://script.google.com/macros/s/AKfycbxgQ9uuuBFlqBixZ4wnkbURToxxSk26FJHmQbu94qFn0bE5ivQsybO_0VzY7NwicTA/exec";
+
+    const ua = navigator.userAgent || "";
+    const lang = navigator.language || "";
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || "";
+    const screenW = window.screen.width || "";
+    const screenH = window.screen.height || "";
+    const referrer = document.referrer || "";
+    const pageUrl = window.location.href || "";
+    const pagePath = window.location.pathname || "";
+
+    const params = new URLSearchParams(window.location.search);
+    const tagId = params.get("tag") || "000";
+    const campaign = params.get("campaign") || "";
+    const source = params.get("src") || "nfc";
+
+    const isAndroid = /Android/i.test(ua);
+    const isIOS = /iPhone|iPad|iPod/i.test(ua);
+    const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(ua);
+
+    const webUrl = "https://www.instagram.com/" + username + "/";
+    const androidIntent = "intent://www.instagram.com/" + username + "/#Intent;package=com.instagram.android;scheme=https;end";
+
+    const pageOpenedAt = Date.now();
+
+    function getPlatform() {
+      if (isAndroid) return "Android";
+      if (isIOS) return "iOS";
+      return "Other";
     }
-  }
 
-  init();
-</script>
+    function getModel() {
+      if (isIOS) return "iPhone/iPad";
+      if (isAndroid) return "Android";
+      return "Other";
+    }
+
+    function getBrowserName() {
+      const ua = navigator.userAgent;
+      if (ua.includes("Instagram")) return "Instagram In-App Browser";
+      if (ua.includes("CriOS")) return "Chrome iOS";
+      if (ua.includes("Chrome")) return "Chrome";
+      if (ua.includes("Safari")) return "Safari";
+      if (ua.includes("Firefox")) return "Firefox";
+      if (ua.includes("Edg")) return "Edge";
+      return "Unknown";
+    }
+
+    function getPersistentUserId() {
+      let id = localStorage.getItem("ovrtm_user_id");
+      if (!id) {
+        id = "u_" + Math.random().toString(36).slice(2) + Date.now();
+        localStorage.setItem("ovrtm_user_id", id);
+      }
+      return id;
+    }
+
+    const userId = getPersistentUserId();
+
+    function buildPayload(eventType, extra = {}) {
+      return {
+        event: eventType,
+        timestamp_client: new Date().toISOString(),
+        tag: tagId,
+        campaign: campaign,
+        src: source,
+        username: username,
+        user_id: userId,
+        ua: ua,
+        platform: getPlatform(),
+        model: getModel(),
+        browser: getBrowserName(),
+        mobile: isMobile ? "TRUE" : "FALSE",
+        language: lang,
+        timezone: timezone,
+        screen: screenW + "x" + screenH,
+        referrer: referrer,
+        page_url: pageUrl,
+        page_path: pagePath,
+        ...extra
+      };
+    }
+
+    function sendTracking(data) {
+      const body = JSON.stringify(data);
+
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: "text/plain;charset=UTF-8" });
+        navigator.sendBeacon(trackingUrl, blob);
+      } else {
+        fetch(trackingUrl, {
+          method: "POST",
+          headers: { "Content-Type": "text/plain;charset=UTF-8" },
+          body: body,
+          keepalive: true
+        }).catch(() => {});
+      }
+    }
+
+    function track(eventType, extra = {}) {
+      sendTracking(buildPayload(eventType, extra));
+    }
+
+    track("page_open");
+
+    document.addEventListener("visibilitychange", function () {
+      track("visibility_change", {
+        visibility_state: document.visibilityState
+      });
+    });
+
+    document.getElementById("openBtn").addEventListener("click", function () {
+      track("click_instagram", {
+        destination: webUrl
+      });
+
+      if (isAndroid) {
+        window.location.href = androidIntent;
+        setTimeout(function () {
+          window.location.href = webUrl;
+        }, 900);
+      } else {
+        window.location.href = webUrl;
+      }
+    });
+
+    window.addEventListener("pagehide", function () {
+      const secondsOnPage = Math.round((Date.now() - pageOpenedAt) / 1000);
+      track("page_hide", {
+        seconds_on_page: secondsOnPage
+      });
+    });
+  </script>
+
 </body>
 </html>
